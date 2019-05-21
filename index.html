@@ -49,7 +49,7 @@
 			.then(grammar => PEG.buildParser(grammar))
 			.then(parser => fsParser = parser);
 			
-    const format => (types, compact, exportt) {
+    const format = (types, compact, exportt) => {
       const iface = exportt ? 'export interface ' : 'interface ';
       if (compact) {
         return types.map(t => iface + t.name +  ' { ' + '' + t.fields.join('; ') + ' }').join('\n');
