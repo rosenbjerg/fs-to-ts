@@ -6,11 +6,11 @@
   <body>
     
     <label>
-      <input type="checkbox">
+      <input type="checkbox" id="compact">
       Compact
     </label>
     <label>
-      <input type="checkbox">
+      <input type="checkbox" id="export">
       Export
     </label>
     
@@ -19,7 +19,10 @@
     <h4>TypeScript:</h4>
     <textarea readonly id="output"></textarea>
     <script>
-
+      const compactInput = document.getElementById('compact');
+      const exportInput = document.getElementById('export');
+      const input = document.getElementById('input');
+      const output = document.getElementById('output');
 
     </scipt>
   </body>
