@@ -62,7 +62,7 @@
 		const refresh = () => {
 			if (!fsParser) return;
 			const fs = input.value;
-			output.value = format(fsParser(fs));
+			output.value = format(fsParser.parse(fs));
 		}
 		compactInput.addEventListener('change', refresh);
 		exportInput.addEventListener('change', refresh);
