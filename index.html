@@ -44,7 +44,7 @@
 		const output = document.getElementById('output');
 
 		let fsParser = undefined;
-		fetch('//grammar.pegjs')
+		fetch('grammar.pegjs')
 			.then(response => response.text())
 			.then(grammar => PEG.buildParser(grammar))
 			.then(parser => fsParser = parser);
