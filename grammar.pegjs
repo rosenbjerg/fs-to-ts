@@ -18,7 +18,7 @@ Types
 Type = "type" _ name:Name _ "=" _ "{" __ fields:Fields __ "}" { return register({name, fields}) }
 
 Fields "fields"
-	= head:Field _ ";" __ tail:Fields { return [head, ...tail] }
+	= head:Field _ [;\r\n] __ tail:Fields { return [head, ...tail] }
     / head:Field { return [head] }
 Field "field" 
 	= name:Name _ ":"_ type:FSharpType _ "option" { return name + '?:' + type }
