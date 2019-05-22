@@ -44,7 +44,6 @@
 			const output = document.getElementById('output');
 
 			let fsParser = null;
-			// let fsParser = peg.generate(grammar);
 			fetch('grammar.pegjs')
 				.then(response => response.text())
 				.then(grammar => PEG.buildParser(grammar))
@@ -61,8 +60,7 @@
 				if (!fsParser) return;
 				const fs = input.value;
 				const parsed = fsParser.parse(fs);
-				console.log(parsed);
-				output.value = format(parsed);
+				output.value = format(parsed, compactInput.checked, exportInput.checked);
 			};
 			compactInput.addEventListener('change', refresh);
 			exportInput.addEventListener('change', refresh);
