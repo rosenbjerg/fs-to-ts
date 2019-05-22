@@ -82,7 +82,11 @@
 			fetch('grammar.pegjs')
 				.then(response => response.text())
 				.then(grammar => PEG.buildParser(grammar))
-				.then(parser => fsParser = parser);
+				.then(parser => fsParser = parser)
+				.then(() => {
+					input.setValue('type MyRecord = {\n\tname:string\n\tnicknames:string array\n\tage:int\n\tcreated:DateTime\n}');
+					input.clearSelection();
+				});
 
 			const format = (types, compact, exportt) => {
 			const iface = exportt ? 'export interface ' : 'interface ';
@@ -97,7 +101,8 @@
 				if (!fs) return;
 				try {
 					const parsed = fsParser.parse(fs);
-					output.setValue(format(parsed, compactInput.checked, exportInput.checked));
+					output.setValue(format(parsed, compactInput.checked, exportInput.checked) + '\n');
+					output.clearSelection();
 				}
 				catch (e) {
 					output.setValue(e.message);
