@@ -1,73 +1,73 @@
 <html>
-  <head>
-    <title>Convert F# type definitions to TypeScript</title>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/pegjs/0.9.0/peg.min.js"></script>
-	<style>
-		html, body { 
-			height: 100%;
-			width: 100%;
-			padding: 0;
-			margin: 0;
-		}
-		.container {
-			padding-top: 30px;
-			width: 800px;
-			margin: auto;
-		}
-		textarea {
-			height: 400px;
-			width: 100%
-		}
-	</style>
-  </head>
-  <body>
-    <div class="container">
-		<label>
-			<input type="checkbox" id="compact">
-			Compact
-		</label>
-		<label>
-			<input type="checkbox" id="export">
-			Export
-		</label>
-		
-		<h4>Paste the F# type definition:</h4>
-		<textarea id="input"></textarea>
-		<h4>TypeScript:</h4>
-		<textarea readonly id="output"></textarea>
-	</div>
-    
-    <script>
-		const compactInput = document.getElementById('compact');
-		const exportInput = document.getElementById('export');
-		const input = document.getElementById('input');
-		const output = document.getElementById('output');
+	<head>
+		<title>Convert F# type definitions to TypeScript</title>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/pegjs/0.9.0/peg.min.js"></script>
+		<style>
+			html, body {
+				height: 100%;
+				width: 100%;
+				padding: 0;
+				margin: 0;
+			}
+			.container {
+				padding-top: 30px;
+				width: 800px;
+				margin: auto;
+			}
+			textarea {
+				height: 400px;
+				width: 100%
+			}
+		</style>
+		</head>
+		<body>
+		<div class="container">
+			<label>
+				<input type="checkbox" id="compact">
+				Compact
+			</label>
+			<label>
+				<input type="checkbox" id="export">
+				Export
+			</label>
 
-		let fsParser = undefined;
-		fetch('grammar.pegjs')
-			.then(response => response.text())
-			.then(grammar => PEG.buildParser(grammar))
-			.then(parser => fsParser = parser);
-			
-    const format = (types, compact, exportt) => {
-      const iface = exportt ? 'export interface ' : 'interface ';
-      if (compact) {
-        return types.map(t => iface + t.name +  ' { ' + '' + t.fields.join('; ') + ' }').join('\n');
-      }
-      else {
-        return types.map(t => iface + t.name +  ' {\n' + '' + t.fields.map(f => '\t' + f).join('\n') + '\n}').join('\n');
-      }
-    }
-      
-		const refresh = () => {
-			if (!fsParser) return;
-			const fs = input.value;
-			output.value = format(fsParser.parse(fs));
-		}
-		compactInput.addEventListener('change', refresh);
-		exportInput.addEventListener('change', refresh);
-		input.addEventListener('input', refresh);
-			
-    </script>
-  </body>
+			<h4>Paste the F# type definition:</h4>
+			<textarea id="input"></textarea>
+			<h4>TypeScript:</h4>
+			<textarea readonly id="output"></textarea>
+		</div>
+
+		<script defer>
+			const compactInput = document.getElementById('compact');
+			const exportInput = document.getElementById('export');
+			const input = document.getElementById('input');
+			const output = document.getElementById('output');
+
+			let fsParser = null;
+			// let fsParser = peg.generate(grammar);
+			fetch('grammar.pegjs')
+				.then(response => response.text())
+				.then(grammar => PEG.buildParser(grammar))
+				.then(parser => fsParser = parser);
+
+			const format = (types, compact, exportt) => {
+			const iface = exportt ? 'export interface ' : 'interface ';
+			return compact
+					? types.map(t => iface + t.name + ' { ' + '' + t.fields.join('; ') + ' }').join('\n')
+					: types.map(t => iface + t.name + ' {\n' + '' + t.fields.map(f => '\t' + f).join('\n') + '\n}').join('\n');
+			};
+
+			const refresh = () => {
+				if (!fsParser) return;
+				const fs = input.value;
+				const parsed = fsParser.parse(fs);
+				console.log(parsed);
+				output.value = format(parsed);
+			};
+			compactInput.addEventListener('change', refresh);
+			exportInput.addEventListener('change', refresh);
+			input.addEventListener('input', refresh);
+
+		</script>
+	</body>
 </html>
