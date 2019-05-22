@@ -1,27 +1,50 @@
-<html>
+<html lang="en">
 	<head>
-		<title>Convert F# type definitions to TypeScript</title>
+		<title>F# to TypeScript</title>
 		<script src="https://cdnjs.cloudflare.com/ajax/libs/pegjs/0.9.0/peg.min.js"></script>
+
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.4.4/ace.js"></script>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.4.4/mode-fsharp.js"></script>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.4.4/mode-typescript.js"></script>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.4.4/theme-github.js"></script>
+
+		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.17.0/min/vs/editor/editor.main.css">
 		<style>
 			html, body {
 				height: 100%;
 				width: 100%;
 				padding: 0;
 				margin: 0;
+				font-family: arial, sans-serif;
+				background-color: #F5F5F5;
 			}
 			.container {
 				padding-top: 30px;
-				width: 1080px;
+				width: 90%;
 				margin: auto;
+				display: block;
 			}
-			textarea {
-				height: 400px;
-				width: 100%
+			.codeContainer {
+				width: 50%;
+				display: inline-block;
+				position: relative;
+				padding: 10px;
 			}
+			.flex {
+				display: flex;
+			}
+			#input, #output {
+				font-size: 9pt;
+				height: 500px;
+				display: block;
+				overflow: auto;
+			}
+
 		</style>
 		</head>
 		<body>
 		<div class="container">
+			<h3>F# type definition to TypeScript interface</h3>
 			<label>
 				<input type="checkbox" id="compact">
 				Compact
@@ -31,17 +54,31 @@
 				Export
 			</label>
 
-			<h4>Paste the F# type definition:</h4>
-			<textarea id="input"></textarea>
-			<h4>TypeScript:</h4>
-			<textarea readonly id="output"></textarea>
+			<div class="flex">
+				<span class="codeContainer">
+					<h4>Paste the F# type definition:</h4>
+					<code id="input" class="fsharp" contenteditable></code>
+				</span>
+				<span class="codeContainer">
+					<h4>TypeScript:</h4>
+					<code id="output" class="typescript"></code>
+				</span>
+<!--				<textarea id="input"></textarea>-->
+<!--				<textarea readonly id="output"></textarea>-->
+			</div>
 		</div>
 
-		<script defer>
+		<script>
 			const compactInput = document.getElementById('compact');
 			const exportInput = document.getElementById('export');
-			const input = document.getElementById('input');
-			const output = document.getElementById('output');
+
+			const input = ace.edit("input");
+			const output = ace.edit("output");
+
+			input.setTheme("ace/theme/github");
+			output.setTheme("ace/theme/github");
+			input.session.setMode("ace/mode/fsharp");
+			output.session.setMode("ace/mode/typescript");
 
 			let fsParser = null;
 			fetch('grammar.pegjs')
@@ -58,9 +95,15 @@
 
 			const refresh = () => {
 				if (!fsParser) return;
-				const fs = input.value;
-				const parsed = fsParser.parse(fs);
-				output.value = format(parsed, compactInput.checked, exportInput.checked);
+				const fs = input.getValue();
+				if (!fs) return;
+				try {
+					const parsed = fsParser.parse(fs);
+					output.setValue(format(parsed, compactInput.checked, exportInput.checked));
+				}
+				catch (e) {
+					output.setValue(e.message);
+				}
 			};
 			compactInput.addEventListener('change', refresh);
 			exportInput.addEventListener('change', refresh);
