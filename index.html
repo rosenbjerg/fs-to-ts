@@ -6,7 +6,7 @@
 		<script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.4.4/ace.js"></script>
 		<script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.4.4/mode-fsharp.js"></script>
 		<script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.4.4/mode-typescript.js"></script>
-		<script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.4.4/theme-github.js"></script>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.4.4/theme-iplastic.js"></script>
 
 		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.17.0/min/vs/editor/editor.main.css">
 		<style>
@@ -63,8 +63,6 @@
 					<h4>TypeScript:</h4>
 					<code id="output" class="typescript"></code>
 				</span>
-<!--				<textarea id="input"></textarea>-->
-<!--				<textarea readonly id="output"></textarea>-->
 			</div>
 		</div>
 
@@ -75,8 +73,8 @@
 			const input = ace.edit("input");
 			const output = ace.edit("output");
 
-			input.setTheme("ace/theme/github");
-			output.setTheme("ace/theme/github");
+			input.setTheme("ace/theme/iplastic");
+			output.setTheme("ace/theme/iplastic");
 			input.session.setMode("ace/mode/fsharp");
 			output.session.setMode("ace/mode/typescript");
 
