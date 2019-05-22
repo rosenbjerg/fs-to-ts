@@ -8,18 +8,9 @@
     	types[type.name] = true;
         return type;
     }
-    function format(types, compact, exportt) {
-    	const iface = exportt ? 'export interface ' : 'interface ';
-    	if (compact) {
-        	return types.map(t => iface + t.name +  ' { ' + '' + t.fields.join('; ') + ' }').join('\n');
-        }
-        else {
-        	return types.map(t => iface + t.name +  ' {\n' + '' + t.fields.map(f => '\t' + f).join('\n') + '\n}').join('\n');
-        }
-    }
 }
 
-Start = types:Types { return format(types, true, false) }
+Start = types:Types
 
 Types 
 	= head:Type [ \r\n]+ tail:Types { return [head, ...tail] }
@@ -34,9 +25,10 @@ Field "field"
 	/ name:Name _ ":"_ type:FSharpType { return name + ':' + type }
 
 FSharpType "F# type" = FSharpArray / FSharpPrimitive
-FSharpPrimitive = FSharpString / FSharpNumber / FSharpUserDefinedType
+FSharpPrimitive = FSharpString / FSharpNumber / FSharpDateTime / FSharpUserDefinedType
 FSharpString = ("string" / "char") { return "string" }
 FSharpNumber = ("int32" / "int64" / "int" / "float32" / "float64" / "float" / "decimal") { return "number" }
+FSharpDateTime = "DateTime" { return "Date" }
 FSharpArray = type:FSharpPrimitive _ ("array" / "list" / "[]") { return type + '[]' }
 FSharpUserDefinedType = title:Name { return exists(title) }
 
