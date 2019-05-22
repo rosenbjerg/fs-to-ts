@@ -10,15 +10,15 @@
     }
 }
 
-Start = types:Types
+Start = __ types:Types __ { return types }
 
 Types 
 	= head:Type [ \r\n]+ tail:Types { return [head, ...tail] }
     / head:Type { return [head] }
-Type = "type" _ name:Name _ "=" _ "{" _ fields:Fields _ "}" { return register({name, fields}) }
+Type = "type" _ name:Name _ "=" _ "{" __ fields:Fields __ "}" { return register({name, fields}) }
 
 Fields "fields"
-	= head:Field _ ";" _ tail:Fields { return [head, ...tail] }
+	= head:Field _ ";" __ tail:Fields { return [head, ...tail] }
     / head:Field { return [head] }
 Field "field" 
 	= name:Name _ ":"_ type:FSharpType _ "option" { return name + '?:' + type }
@@ -34,3 +34,4 @@ FSharpUserDefinedType = title:Name { return exists(title) }
 
 Name "name" = [^ \t\r\n:;]+ { return text() }
 _ "whitespace" = [ ]*
+__ "whitespace" = [ \t\r\n]*
